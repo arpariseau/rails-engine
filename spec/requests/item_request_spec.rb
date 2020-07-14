@@ -31,7 +31,20 @@ describe 'an api request' do
   end
 
   it 'can post a new item' do
+    merchant = create(:merchant)
+    new_item = build(:item, merchant: merchant)
+    new_item_hash = { name: new_item.name,
+                      description: new_item.description,
+                      unit_price: new_item.unit_price,
+                      merchant_id: merchant.id }
 
+    post api_v1_items_path params: new_item_hash
+
+    post_item = Item.last
+    expect(new_item.name).to eq(post_item.name)
+    expect(new_item.description).to eq(post_item.description)
+    expect(new_item.unit_price).to eq(post_item.unit_price)
+    expect(new_item.merchant_id).to eq(post_item.merchant_id)
   end
 
   it 'can delete an item' do
