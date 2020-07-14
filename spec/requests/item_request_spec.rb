@@ -17,7 +17,17 @@ describe 'an api request' do
   end
 
   it 'can get all items' do
+    get api_v1_items_path
+    resp_items = JSON.parse(response.body, symbolize_names: true)[:data]
 
+    expect(resp_items.count).to eq(3)
+    resp_items.each do |item|
+      expect(item[:type]).to eq("item")
+      expect(item[:attributes]).to have_key(:name)
+      expect(item[:attributes]).to have_key(:description)
+      expect(item[:attributes]).to have_key(:unit_price)
+      expect(item[:attributes]).to have_key(:merchant_id)
+    end
   end
 
   it 'can post a new item' do
