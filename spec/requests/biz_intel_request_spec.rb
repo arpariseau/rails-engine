@@ -46,4 +46,30 @@ describe 'an api request' do
     expect(resp_merch.first[:attributes][:name]).to eq(@merchant_a.name)
     expect(resp_merch.last[:attributes][:name]).to eq(@merchant_c.name)
   end
+
+  it 'can get the merchant(s) with the most items sold' do
+    get api_v1_merchants_most_items_path, params: {quantity: 1}
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(resp_merch.count).to eq(1)
+    expect(resp_merch.first[:id].to_i).to eq(@merchant_c.id)
+    expect(resp_merch.first[:attributes][:name]).to eq(@merchant_c.name)
+
+    get api_v1_merchants_most_items_path, params: {quantity: 2}
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(resp_merch.count).to eq(2)
+    expect(resp_merch.first[:id].to_i).to eq(@merchant_c.id)
+    expect(resp_merch.last[:id].to_i).to eq(@merchant_b.id)
+    expect(resp_merch.first[:attributes][:name]).to eq(@merchant_c.name)
+    expect(resp_merch.last[:attributes][:name]).to eq(@merchant_b.name)
+
+    @transaction_b.update(result: "failed")
+
+    get api_v1_merchants_most_items_path, params: {quantity: 2}
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(resp_merch.count).to eq(2)
+    expect(resp_merch.last[:id].to_i).to eq(@merchant_a.id)
+    expect(resp_merch.first[:id].to_i).to eq(@merchant_c.id)
+    expect(resp_merch.last[:attributes][:name]).to eq(@merchant_a.name)
+    expect(resp_merch.first[:attributes][:name]).to eq(@merchant_c.name)
+  end
 end
