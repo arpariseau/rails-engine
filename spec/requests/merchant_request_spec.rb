@@ -57,4 +57,29 @@ describe 'an api request' do
     expect(edited_merch.name).to eq(update_merch.name)
     expect(edited_merch.name).to eq(resp_merch[:name])
   end
+
+  it 'can show items for a merchant' do
+    test_merchant = Merchant.first
+    item_a = create(:item, merchant: test_merchant)
+    item_b = create(:item, merchant: test_merchant)
+    item_c = create(:item, merchant: Merchant.last)
+
+    get api_v1_merchant_path(test_merchant)
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    test_merchant_items = resp_merch[:relationships][:items][:data]
+    test_item_ids = test_merchant_items.map {|item| item[:id].to_i}
+    expect(test_item_ids.count).to eq(2)
+    expect(test_item_ids).to include(item_a.id)
+    expect(test_item_ids).to include(item_b.id)
+    expect(test_item_ids).to_not include(item_c.id)
+
+    get api_v1_merchant_items_path(test_merchant)
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    test_item_ids = test_merchant_items.map {|item| item[:id].to_i}
+    expect(test_item_ids.count).to eq(2)
+    expect(test_item_ids).to include(item_a.id)
+    expect(test_item_ids).to include(item_b.id)
+    expect(test_item_ids).to_not include(item_c.id)
+
+  end
 end
