@@ -39,6 +39,7 @@ describe 'an api request' do
                    merchant_id: merchant.id }
 
     post api_v1_items_path, params: new_params
+    expect(response).to be_success
 
     post_item = Item.last
     expect(new_item.name).to eq(post_item.name)
@@ -50,6 +51,7 @@ describe 'an api request' do
   it 'can delete an item' do
     del_item = Item.last
     delete api_v1_item_path(del_item)
+    expect(response).to be_success
 
     expect(Item.all).to_not include(del_item)
   end
@@ -64,6 +66,7 @@ describe 'an api request' do
                     merchant_id: merchant.id }
 
     patch api_v1_item_path(edit_item), params: edit_params
+    expect(response).to be_success
 
     edited_item = Item.first
     expect(edited_item.name).to eq(update_item.name)
