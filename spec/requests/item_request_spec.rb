@@ -88,4 +88,16 @@ describe 'an api request' do
     expect(edited_item.unit_price).to eq(resp_item[:unit_price])
     expect(edited_item.merchant_id).to eq(resp_item[:merchant_id])
   end
+
+  it 'can show a merchant for an item' do
+    test_item = Item.first
+
+    get api_v1_item_path(test_item)
+    resp_item = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(test_item.merchant_id).to eq(resp_item[:relationships][:merchant][:data][:id].to_i)
+
+    get api_v1_item_merchant_path(test_item)
+    resp_item = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(test_item.merchant_id).to eq(resp_item[:id].to_i)
+  end
 end
