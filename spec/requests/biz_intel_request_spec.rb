@@ -15,9 +15,9 @@ describe 'an api request' do
     @transaction_b = create(:transaction, invoice: invoice_b)
 
     @merchant_c = create(:merchant)
-    @item_c = create(:item, merchant: @merchant_c)
-    @invoice_c = create(:invoice, merchant: @merchant_c)
-    create(:invoice_item, item: item_b, invoice: invoice_b, unit_price: 2, quantity: 15)
+    item_c = create(:item, merchant: @merchant_c)
+    invoice_c = create(:invoice, merchant: @merchant_c)
+    create(:invoice_item, item: item_c, invoice: invoice_c, unit_price: 2, quantity: 15)
     @transaction_c = create(:transaction, invoice: invoice_c)
   end
 
@@ -25,14 +25,14 @@ describe 'an api request' do
     get api_v1_merchants_most_revenue_path, params: {quantity: 1}
     resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
     expect(resp_merch.count).to eq(1)
-    expect(resp_merch.first[:id]).to eq(@merchant_a.id)
+    expect(resp_merch.first[:id].to_i).to eq(@merchant_a.id)
     expect(resp_merch.first[:attributes][:name]).to eq(@merchant_a.name)
 
     get api_v1_merchants_most_revenue_path, params: {quantity: 2}
     resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
     expect(resp_merch.count).to eq(2)
-    expect(resp_merch.first[:id]).to eq(@merchant_a.id)
-    expect(resp_merch.last[:id]).to eq(@merchant_b.id)
+    expect(resp_merch.first[:id].to_i).to eq(@merchant_a.id)
+    expect(resp_merch.last[:id].to_i).to eq(@merchant_b.id)
     expect(resp_merch.first[:attributes][:name]).to eq(@merchant_a.name)
     expect(resp_merch.last[:attributes][:name]).to eq(@merchant_b.name)
 
@@ -41,8 +41,8 @@ describe 'an api request' do
     get api_v1_merchants_most_revenue_path, params: {quantity: 2}
     resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
     expect(resp_merch.count).to eq(2)
-    expect(resp_merch.first[:id]).to eq(@merchant_a.id)
-    expect(resp_merch.last[:id]).to eq(@merchant_c.id)
+    expect(resp_merch.first[:id].to_i).to eq(@merchant_a.id)
+    expect(resp_merch.last[:id].to_i).to eq(@merchant_c.id)
     expect(resp_merch.first[:attributes][:name]).to eq(@merchant_a.name)
     expect(resp_merch.last[:attributes][:name]).to eq(@merchant_c.name)
   end
