@@ -29,18 +29,20 @@ describe 'an api request' do
     new_params = { name: new_merch.name }
 
     post api_v1_merchants_path, params: new_params
-    expect(response).to be_success
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data][:attributes]
 
     post_merch = Merchant.last
     expect(new_merch.name).to eq(post_merch.name)
+    expect(new_merch.name).to eq(resp_merch[:name])
   end
 
   it 'can delete a merchant' do
     del_merch = Merchant.last
     delete api_v1_merchant_path(del_merch)
-    expect(response).to be_success
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data][:attributes]
 
     expect(Merchant.all).to_not include(del_merch)
+    expect(del_merch.name).to eq(resp_merch[:name])
   end
 
   it 'can update an existing merchant' do
@@ -49,9 +51,10 @@ describe 'an api request' do
     edit_params = { name: update_merch.name }
 
     patch api_v1_merchant_path(edit_merch), params: edit_params
-    expect(response).to be_success
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data][:attributes]
 
     edited_merch = Merchant.first
     expect(edited_merch.name).to eq(update_merch.name)
+    expect(edited_merch.name).to eq(resp_merch[:name])
   end
 end

@@ -39,21 +39,30 @@ describe 'an api request' do
                    merchant_id: merchant.id }
 
     post api_v1_items_path, params: new_params
-    expect(response).to be_success
+    resp_item = JSON.parse(response.body, symbolize_names: true)[:data][:attributes]
 
     post_item = Item.last
-    expect(new_item.name).to eq(post_item.name)
-    expect(new_item.description).to eq(post_item.description)
-    expect(new_item.unit_price).to eq(post_item.unit_price)
-    expect(new_item.merchant_id).to eq(post_item.merchant_id)
+    expect(post_item.name).to eq(new_item.name)
+    expect(post_item.description).to eq(new_item.description)
+    expect(post_item.unit_price).to eq(new_item.unit_price)
+    expect(post_item.merchant_id).to eq(new_item.merchant_id)
+
+    expect(post_item.name).to eq(resp_item[:name])
+    expect(post_item.description).to eq(resp_item[:description])
+    expect(post_item.unit_price).to eq(resp_item[:unit_price])
+    expect(post_item.merchant_id).to eq(resp_item[:merchant_id])
   end
 
   it 'can delete an item' do
     del_item = Item.last
     delete api_v1_item_path(del_item)
-    expect(response).to be_success
+    resp_item = JSON.parse(response.body, symbolize_names: true)[:data][:attributes]
 
     expect(Item.all).to_not include(del_item)
+    expect(del_item.name).to eq(resp_item[:name])
+    expect(del_item.description).to eq(resp_item[:description])
+    expect(del_item.unit_price).to eq(resp_item[:unit_price])
+    expect(del_item.merchant_id).to eq(resp_item[:merchant_id])
   end
 
   it 'can update an existing item' do
@@ -66,12 +75,17 @@ describe 'an api request' do
                     merchant_id: merchant.id }
 
     patch api_v1_item_path(edit_item), params: edit_params
-    expect(response).to be_success
+    resp_item = JSON.parse(response.body, symbolize_names: true)[:data][:attributes]
 
     edited_item = Item.first
     expect(edited_item.name).to eq(update_item.name)
     expect(edited_item.description).to eq(update_item.description)
     expect(edited_item.unit_price).to eq(update_item.unit_price)
     expect(edited_item.merchant_id).to eq(merchant.id)
+
+    expect(edited_item.name).to eq(resp_item[:name])
+    expect(edited_item.description).to eq(resp_item[:description])
+    expect(edited_item.unit_price).to eq(resp_item[:unit_price])
+    expect(edited_item.merchant_id).to eq(resp_item[:merchant_id])
   end
 end
