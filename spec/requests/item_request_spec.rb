@@ -33,12 +33,12 @@ describe 'an api request' do
   it 'can post a new item' do
     merchant = create(:merchant)
     new_item = build(:item, merchant: merchant)
-    new_item_hash = { name: new_item.name,
-                      description: new_item.description,
-                      unit_price: new_item.unit_price,
-                      merchant_id: merchant.id }
+    new_params = { name: new_item.name,
+                   description: new_item.description,
+                   unit_price: new_item.unit_price,
+                   merchant_id: merchant.id }
 
-    post api_v1_items_path params: new_item_hash
+    post api_v1_items_path, params: new_params
 
     post_item = Item.last
     expect(new_item.name).to eq(post_item.name)
@@ -48,10 +48,27 @@ describe 'an api request' do
   end
 
   it 'can delete an item' do
+    del_item = Item.last
+    delete api_v1_item_path(del_item)
 
+    expect(Item.all).to_not include(del_item)
   end
 
   it 'can update an existing item' do
+    merchant = create(:merchant)
+    update_item = build(:item)
+    edit_item = Item.first
+    edit_params = { name: update_item.name,
+                    description: update_item.description,
+                    unit_price: update_item.unit_price,
+                    merchant_id: merchant.id }
 
+    patch api_v1_item_path(edit_item), params: edit_params
+
+    edited_item = Item.first
+    expect(edited_item.name).to eq(update_item.name)
+    expect(edited_item.description).to eq(update_item.description)
+    expect(edited_item.unit_price).to eq(update_item.unit_price)
+    expect(edited_item.merchant_id).to eq(merchant.id)
   end
 end
