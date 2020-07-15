@@ -13,17 +13,14 @@ describe 'an api request' do
     expect(test_merch.name).to eq(resp_merch[:name])
   end
 
-  xit 'can get all merchants' do
+  it 'can get all merchants' do
     get api_v1_merchants_path
-    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    merchants = JSON.parse(response.body, symbolize_names: true)[:data]
 
-    expect(resp_items.count).to eq(3)
-    resp_items.each do |item|
-      expect(item[:type]).to eq("item")
-      expect(item[:attributes]).to have_key(:name)
-      expect(item[:attributes]).to have_key(:description)
-      expect(item[:attributes]).to have_key(:unit_price)
-      expect(item[:attributes]).to have_key(:merchant_id)
+    expect(merchants.count).to eq(3)
+    merchants.each do |merch|
+      expect(merch[:type]).to eq("merchant")
+      expect(merch[:attributes]).to have_key(:name)
     end
   end
 
