@@ -20,4 +20,12 @@ class Merchant < ApplicationRecord
     .order("SUM(invoice_items.quantity) DESC")
     .limit(quantity)
   end
+
+  def revenue
+    query = "SELECT SUM(ii.unit_price * ii.quantity) AS revenue FROM invoices
+             JOIN invoice_items ii ON ii.invoice_id = invoices.id
+             JOIN transactions t ON t.invoice_id = invoices.id
+             WHERE t.result = 'success' AND invoices.merchant_id = #{id}"
+    ActiveRecord::Base.connection.execute(query)
+  end
 end

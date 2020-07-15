@@ -72,4 +72,14 @@ describe 'an api request' do
     expect(resp_merch.last[:attributes][:name]).to eq(@merchant_a.name)
     expect(resp_merch.first[:attributes][:name]).to eq(@merchant_c.name)
   end
+
+  xit 'can get revenue across a date range' do
+
+  end
+
+  it 'can get revenue for a merchant' do
+    get api_v1_merchant_revenue_path(@merchant_a)
+    resp = JSON.parse(response.body, symbolize_names: true)[:data][:attributes]
+    expect(resp[:revenue].to_f).to eq(50)
+  end
 end
