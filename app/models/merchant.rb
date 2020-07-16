@@ -5,6 +5,23 @@ class Merchant < ApplicationRecord
   has_many :invoices, dependent: :destroy
   has_many :customers, through: :invoices
 
+  def self.search_all(attributes)
+    sql_search = attributes.map do |key, value|
+      if value[4] == '-' && value[7] == '-'
+        "DATE(merchants.#{key}) = '#{value}'"
+      elsif value.to_f != 0.0
+        "merchants.#{key} = #{value}"
+      else
+        "LOWER(merchants.#{key}) LIKE '%#{value.downcase}%'"
+      end
+    end.join(" AND ")
+    Merchant.where(sql_search)
+  end
+
+  def self.search_for(attributes)
+    search_all(attributes).first
+  end
+
   def self.most_revenue(quantity)
     Merchant.joins(invoices: [:invoice_items, :transactions])
     .where("transactions.result = 'success'")
