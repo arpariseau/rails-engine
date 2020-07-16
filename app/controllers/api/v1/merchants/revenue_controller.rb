@@ -1,4 +1,4 @@
-class Api::V1::MerchantRevenuesController < ApplicationController
+class Api::V1::Merchants::RevenueController < ApplicationController
   def index
     merchants = if params[:quantity].nil?
                   Merchant.most_revenue(1)
