@@ -23,11 +23,11 @@ describe Invoice, type: :model do
 
       create(:transaction, invoice: invoice_1)
       create(:transaction, invoice: invoice_2)
-      create(:transaction, invoice: invoice_4)
+      create(:transaction, invoice: invoice_3)
 
-      invoice_1.update(created_at: Date.new(2016, 04, 02))
-      invoice_2.update(created_at: Date.new(2016, 04, 04))
-      invoice_3.update(created_at: Date.new(2016, 04, 03))
+      invoice_1.update(created_at: Date.new(2016, 04, 01))
+      invoice_2.update(created_at: Date.new(2016, 04, 02))
+      invoice_4.update(created_at: Date.new(2016, 04, 04))
 
       revenue = Invoice.total_revenue("2016-04-01", "2016-04-05")
       expect(revenue.to_a.first["revenue"]).to eq(100)
