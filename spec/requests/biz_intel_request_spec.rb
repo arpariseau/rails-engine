@@ -88,4 +88,14 @@ describe 'an api request' do
     resp = JSON.parse(response.body, symbolize_names: true)[:data][:attributes]
     expect(resp[:revenue].to_f).to eq(50)
   end
+
+  it 'returns all data if no parameter is passed for most revenue and most sold items' do
+    get api_v1_merchants_most_revenue_path
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(resp_merch.count).to eq(3)
+
+    get api_v1_merchants_most_items_path
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(resp_merch.count).to eq(3)
+  end
 end
