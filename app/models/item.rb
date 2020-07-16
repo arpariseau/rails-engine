@@ -9,7 +9,13 @@ class Item < ApplicationRecord
 
   def self.search_for(attributes)
     sql_search = attributes.map do |key, value|
-      "LOWER(items.#{key}) LIKE '%#{value.downcase}%'"
+      if value[4] == '-' && value[7] == '-'
+        "DATE(items.#{key}) = '#{value}'"
+      elsif value.to_f != 0.0
+        "items.#{key} = #{value}"
+      else
+        "LOWER(items.#{key}) LIKE '%#{value.downcase}%'"
+      end
     end.join(" AND ")
     Item.where(sql_search).first
   end
