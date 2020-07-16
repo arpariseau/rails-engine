@@ -21,7 +21,22 @@ describe 'an api request' do
     expect(@merchant_b.id).to eq(resp_merch[:id].to_i)
   end
 
-  xit 'can find all merchants that match paramters' do
+  it 'can find all merchants that match parameters' do
+    get api_v1_merchants_find_all_path, params: { name: 'JO' }
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(resp_merch.count).to eq(2)
 
+    names = resp_merch.map { |merchant| merchant[:attributes][:name] }
+    expect(names).to include(@merchant_a.name)
+    expect(names).to include(@merchant_b.name)
+
+    get api_v1_merchants_find_all_path, params: { name: 'j' }
+    resp_merch = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(resp_merch.count).to eq(3)
+
+    names = resp_merch.map { |merchant| merchant[:attributes][:name] }
+    expect(names).to include(@merchant_a.name)
+    expect(names).to include(@merchant_b.name)
+    expect(names).to include(@merchant_c.name)
   end
 end
