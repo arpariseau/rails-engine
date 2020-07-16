@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get '/revenue', to: 'revenue#show'
       namespace :items do
-        get 'find', to: 'search#show'
+        get '/find', to: 'search#show'
       end
       namespace :merchants do
         get '/most_revenue', to: 'revenue#index'
