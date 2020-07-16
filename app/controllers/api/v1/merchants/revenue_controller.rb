@@ -1,7 +1,7 @@
 class Api::V1::Merchants::RevenueController < ApplicationController
   def index
     merchants = if params[:quantity].nil?
-                  Merchant.most_revenue(1)
+                  Merchant.most_revenue(Merchant.all.count)
                 else
                   Merchant.most_revenue(params[:quantity])
                 end
